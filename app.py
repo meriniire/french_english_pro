@@ -85,10 +85,14 @@ def main():
 
     if st.button("Translate"):
         if french_text:
-            # Translate the text
-            translated_text = GoogleTranslator(source='fr', target='en').translate(french_text)
-            st.subheader("Translated Text:")
-            st.write(translated_text)
+            if french_text in vocabulary:
+                # Display the translation from the vocabulary
+                translated_text = vocabulary[french_text]
+                st.subheader("Translated Text:")
+                st.write(translated_text)
+            else:
+                # Handle the case where the word is not found
+                st.error("The word is not found in the vocabulary. Please enter a valid French word.")
         else:
             st.warning("Please enter some text to translate.")
 

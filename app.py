@@ -1,8 +1,36 @@
 import streamlit as st
 from deep_translator import GoogleTranslator
+import random
+
+# Expanded vocabulary
+vocabulary = {
+    "Bonjour": "Hello",
+    "Merci": "Thank you",
+    "S'il vous plaît": "Please",
+    "Au revoir": "Goodbye",
+    "Chat": "Cat",
+    "Chien": "Dog",
+    "Pomme": "Apple",
+    "Banane": "Banana",
+    "Voiture": "Car",
+    "Maison": "House",
+    "Livre": "Book",
+    "Fleur": "Flower",
+    "École": "School",
+    "Jardin": "Garden",
+    "Oiseau": "Bird",
+    "Soleil": "Sun",
+    "Lune": "Moon"
+}
+
+# Function to get a random word
+def get_word_of_the_day():
+    french_word = random.choice(list(vocabulary.keys()))
+    english_word = vocabulary[french_word]
+    return french_word, english_word
 
 # Set page configuration
-st.set_page_config(page_title=".development of an App that translates French to English for primary school students", layout="wide")
+st.set_page_config(page_title="French to English Translator", layout="wide")
 
 # Custom CSS for styling
 st.markdown("""
@@ -42,36 +70,48 @@ st.markdown("""
 def main():
     st.markdown("<div class='header'><h1>French to English Translator</h1></div>", unsafe_allow_html=True)
     
+    # Word of the Day
+    french_word, english_word = get_word_of_the_day()
+    st.subheader("Word of the Day")
+    st.write(f"**French**: {french_word}  |  **English**: {english_word}")
+
     st.subheader("Enter French Text Below:")
     french_text = st.text_area("French Text", "", height=150)
 
     if st.button("Translate"):
         if french_text:
             try:
-                # Use deep translator to translate the text
                 translated_text = GoogleTranslator(source='fr', target='en').translate(french_text)
-                
-                # Check if the translation is empty
-                if translated_text.strip():
-                    st.subheader("Translated Text:")
-                    st.write(translated_text)
-                else:
-                    st.error("Translation not found. Please enter a valid French phrase.")
-                    
+                st.subheader("Translated Text:")
+                st.write(translated_text)
             except Exception as e:
-                st.error("An error occurred while translating. Please try again.")
+                st.error("Translation failed. Please try again.")
         else:
             st.warning("Please enter some text to translate.")
 
-    # Daily Challenge (optional)
-    st.subheader("Daily Challenge")
-    st.write("Practice translating French words to English!")
+    # Simple Quiz
+    st.subheader("Quiz: What is the English translation?")
+    quiz_question = random.choice(list(vocabulary.items()))
+    options = random.sample(list(vocabulary.values()), 3) + [quiz_question[1]]
+    random.shuffle(options)
+    
+    answer = st.selectbox(f"What is '{quiz_question[0]}' in English?", options)
+    
+    if st.button("Check Answer"):
+        if answer == quiz_question[1]:
+            st.success("Correct! 🎉")
+        else:
+            st.error(f"Oops! The correct answer is '{quiz_question[1]}'.")
 
-    # Additional Vocabulary Learning Section (optional)
-    st.subheader("Tips for Learning French")
-    st.write("1. Practice regularly.")
-    st.write("2. Engage with native speakers.")
-    st.write("3. Use language learning apps.")
+    # Daily Challenge
+    st.subheader("Daily Challenge")
+    challenge_word = random.choice(list(vocabulary.keys()))
+    st.write(f"Translate this word: **{challenge_word}**")
+
+    # Additional Vocabulary Learning Section
+    st.subheader("Explore More Vocabulary")
+    for french, english in vocabulary.items():
+        st.write(f"**French**: {french}  |  **English**: {english}")
 
 # Run the app
 if __name__ == "__main__":

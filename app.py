@@ -85,9 +85,11 @@ def main():
 
     if st.button("Translate"):
         if french_text:
-            if french_text in vocabulary:
+            # Normalize input by stripping whitespace and capitalizing
+            normalized_text = french_text.strip()
+            if normalized_text in vocabulary:
                 # Display the translation from the vocabulary
-                translated_text = vocabulary[french_text]
+                translated_text = vocabulary[normalized_text]
                 st.subheader("Translated Text:")
                 st.write(translated_text)
             else:
